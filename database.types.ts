@@ -9,34 +9,68 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      matches: {
+      match_participants: {
         Row: {
           created_at: string
-          creator: number
           id: number
-          status: string | null
+          match_id: number | null
+          team: number | null
+          user_id: number | null
         }
         Insert: {
           created_at?: string
-          creator: number
           id?: number
-          status?: string | null
+          match_id?: number | null
+          team?: number | null
+          user_id?: number | null
         }
         Update: {
           created_at?: string
-          creator?: number
           id?: number
-          status?: string | null
+          match_id?: number | null
+          team?: number | null
+          user_id?: number | null
         }
         Relationships: [
           {
-            foreignKeyName: "matches_creator_fkey"
-            columns: ["creator"]
+            foreignKeyName: "match_participants_match_id_fkey"
+            columns: ["match_id"]
+            isOneToOne: false
+            referencedRelation: "matches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "match_participants_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
+      }
+      matches: {
+        Row: {
+          created_at: string
+          id: number
+          match_type: string | null
+          score: Json | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          match_type?: string | null
+          score?: Json | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          match_type?: string | null
+          score?: Json | null
+          status?: string | null
+        }
+        Relationships: []
       }
       users: {
         Row: {

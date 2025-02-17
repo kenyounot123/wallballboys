@@ -1,7 +1,11 @@
 import { ChevronDown, User, PlusCircle } from "lucide-react";
 import { createMatch } from "@/app/matches/actions";
+import { getUser } from "@/app/users/actions";
 
-export default function MatchForm() {
+export default async function MatchForm() {
+  // TODO: use some authentication to get the current user
+  const currentUser = await getUser(1);
+
   return (
     <form action={createMatch} className="min-h-screen p-4">
       <div className="max-w-4xl mx-auto">
@@ -20,18 +24,32 @@ export default function MatchForm() {
           {/* Team 1 */}
           <div className="mb-6">
             <label className="block text-sm font-medium mb-2">Team 1</label>
-            <div className="relative mb-2">
-              <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search Player"
-                className="w-full pl-10 pr-4 py-2 rounded-md border bg-gray-50"
-              />
+            <div className="bg-gray-100 p-3 rounded-md mb-2">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                  <User className="h-4 w-4 text-gray-600" />
+                </div>
+                <input
+                  type="text"
+                  name="team1[]"
+                  placeholder="Search Player"
+                  className="w-full pl-2 pr-4 py-2 rounded-md border bg-gray-50"
+                  disabled
+                  readOnly
+                  value={currentUser?.name ?? ''}
+                />
+                <input 
+                  type="hidden"
+                  name="team1[]"
+                  value={currentUser?.id}
+                />
+              </div>
             </div>
             <div className="relative">
               <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
               <input
                 type="text"
+                name="team1[]"
                 placeholder="Search Player"
                 className="w-full pl-10 pr-4 py-2 rounded-md border bg-gray-50"
               />
@@ -45,6 +63,7 @@ export default function MatchForm() {
               <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
               <input
                 type="text"
+                name="team2[]"
                 placeholder="Search Player"
                 className="w-full pl-10 pr-4 py-2 rounded-md border bg-gray-50"
               />
@@ -53,6 +72,7 @@ export default function MatchForm() {
               <User className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
               <input
                 type="text"
+                name="team2[]"
                 placeholder="Search Player"
                 className="w-full pl-10 pr-4 py-2 rounded-md border bg-gray-50"
               />
@@ -64,6 +84,7 @@ export default function MatchForm() {
               <label className="block text-sm text-gray-500 mb-1">Team 1</label>
               <input
                 type="number"
+                name="score1"
                 className="w-full px-3 py-2 rounded-md border bg-gray-50 text-center text-lg"
                 placeholder="0"
               />
@@ -73,6 +94,7 @@ export default function MatchForm() {
               <label className="block text-sm text-gray-500 mb-1">Team 2</label>
               <input
                 type="number"
+                name="score2"
                 className="w-full px-3 py-2 rounded-md border bg-gray-50 text-center text-lg"
                 placeholder="0"
               />
