@@ -1,7 +1,12 @@
-import Image from "next/image";
+import MatchesForm from "./components/matches_form";
 
-export default function Home() {
+export default async function Home() {
   return (
-    <h1 className="text-4xl font-bold">Hello World</h1>
+    <div>
+      <h1>Wallball Boys</h1>
+      <div className="p-4 border-b">
+        <MatchesForm />
+      </div>
+    </div>
   );
 }
