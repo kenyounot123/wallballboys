@@ -14,21 +14,21 @@ export type Database = {
           created_at: string
           id: number
           match_id: number | null
-          team: number | null
+          team: string | null
           user_id: number | null
         }
         Insert: {
           created_at?: string
           id?: number
           match_id?: number | null
-          team?: number | null
+          team?: string | null
           user_id?: number | null
         }
         Update: {
           created_at?: string
           id?: number
           match_id?: number | null
-          team?: number | null
+          team?: string | null
           user_id?: number | null
         }
         Relationships: [
@@ -53,6 +53,7 @@ export type Database = {
           created_at: string
           id: number
           match_type: string | null
+          rating_change: Json | null
           score: Json | null
           status: string | null
         }
@@ -60,6 +61,7 @@ export type Database = {
           created_at?: string
           id?: number
           match_type?: string | null
+          rating_change?: Json | null
           score?: Json | null
           status?: string | null
         }
@@ -67,6 +69,7 @@ export type Database = {
           created_at?: string
           id?: number
           match_type?: string | null
+          rating_change?: Json | null
           score?: Json | null
           status?: string | null
         }
@@ -78,21 +81,21 @@ export type Database = {
           hidden_mmr: number | null
           id: number
           name: string
-          rank: number | null
+          rating: number | null
         }
         Insert: {
           created_at?: string
           hidden_mmr?: number | null
           id?: number
           name: string
-          rank?: number | null
+          rating?: number | null
         }
         Update: {
           created_at?: string
           hidden_mmr?: number | null
           id?: number
           name?: string
-          rank?: number | null
+          rating?: number | null
         }
         Relationships: []
       }

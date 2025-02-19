@@ -3,6 +3,14 @@ import { createClient } from "@/utils/supabase/server";
 import type { Database } from "@/database.types";
 import type { InsertMatch } from "@/types/matches";
 import type { InsertMatchParticipant } from "@/types/match_participants";
+import type { Match } from "@/types/matches";
+import { calculateRatingChanges } from "@/lib/ratings/calculations";
+export async function getMatches() {
+  const supabase = await createClient<Database>();
+  const { data, error } = await supabase.from("matches").select("*");
+  return data as Match[];
+}
+
 export async function createMatch(formData: FormData) {
   const supabase = await createClient<Database>();
   // const team1PlayerIds = formData.getAll("team1[]").map((p) => parseInt(p.toString()));
@@ -15,9 +23,8 @@ export async function createMatch(formData: FormData) {
   const team2PlayerIds = [48, 49]
   const score1 = 10
   const score2 = 20
-  
-  const matchType = determineMatchType(team1PlayerIds, team2PlayerIds);
 
+  // Validate required fields
   if (
     team1PlayerIds.length === 0 ||
     team2PlayerIds.length === 0 ||
@@ -27,6 +34,11 @@ export async function createMatch(formData: FormData) {
     throw new Error("Missing required fields");
   }
 
+  const team1 = { playerIds: team1PlayerIds, score: score1 };
+  const team2 = { playerIds: team2PlayerIds, score: score2 };
+
+  const matchType = determineMatchType(team1PlayerIds, team2PlayerIds);
+
   const match = {
     status: "invalidated",
     score: { team1: score1, team2: score2 },
@@ -34,6 +46,7 @@ export async function createMatch(formData: FormData) {
   } as InsertMatch;
 
   try {
+    const ratingChanges = await calculateRatingChanges({ team1, team2 });
     const { data: matchData, error: matchError } = await supabase
       .from("matches")
       .insert(match)
@@ -43,11 +56,9 @@ export async function createMatch(formData: FormData) {
     if (matchError) throw matchError;
     const matchId = matchData.id;
 
-    console.log("Match created:", matchData);
-
     const participants = [
-      ...team1PlayerIds.map(userId => ({ match_id: matchId, user_id: userId, team: 1 })),
-      ...team2PlayerIds.map(userId => ({ match_id: matchId, user_id: userId, team: 2 })),
+      ...team1PlayerIds.map(userId => ({ match_id: matchId, user_id: userId, team: "1" })),
+      ...team2PlayerIds.map(userId => ({ match_id: matchId, user_id: userId, team: "2" })),
     ] as InsertMatchParticipant[];
 
     const { data, error } = await supabase
@@ -56,7 +67,6 @@ export async function createMatch(formData: FormData) {
       .select();
 
     if (error) throw error;
-    console.log("Participants created:", data);
   } catch (error) {
     console.error("Error during match creation:", error);
     throw error;
