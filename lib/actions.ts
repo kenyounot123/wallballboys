@@ -1,14 +1,10 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-// import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
 
 export async function getSession() {
-  //   const supabase = createServerComponentClient({ cookies });
   const supabase = await createClient();
   const {
     data: { session },
@@ -24,10 +20,13 @@ export async function getSession() {
 }
 
 export async function signOut() {
-  // async function signOut() {
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    redirect("/error");
+  }
 }
 
 export async function signIn() {
@@ -70,8 +69,12 @@ export async function getUsers() {
     .eq("email", email)
     .single();
 
+  if (error) {
+    redirect("/error");
+  }
+
   return {
     session,
-    user
+    user,
   };
 }
