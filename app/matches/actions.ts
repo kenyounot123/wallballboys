@@ -5,10 +5,33 @@ import type { InsertMatch } from "@/types/matches";
 import type { InsertMatchParticipant } from "@/types/match_participants";
 import type { Match } from "@/types/matches";
 import { calculateRatingChanges } from "@/lib/ratings/calculations";
-export async function getMatches() {
+
+export async function getMatches(userId: number) {
   const supabase = await createClient<Database>();
-  const { data, error } = await supabase.from("matches").select("*");
-  return data as Match[];
+  // First get all match IDs for the user
+  const { data: participations, error: participationsError } = await supabase
+    .from("match_participants")
+    .select("match_id")
+    .eq("user_id", userId);
+
+  if (participationsError) throw participationsError;
+  if (!participations) return [];
+
+  // Then get all matches with those IDs
+  const matchIds = participations.map(p => p.match_id as number);
+  const { data: matches, error: matchesError } = await supabase
+    .from("matches")
+    .select(`
+      *,
+      match_participants (
+        user_id,
+        team
+      )
+    `)
+    .in('id', matchIds);
+
+  if (matchesError) throw matchesError;
+  return matches;
 }
 
 export async function createMatch(formData: FormData) {
