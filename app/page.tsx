@@ -4,10 +4,7 @@ export default async function Home() {
   const user = await getSession();
   // const sessionData = session.json()
   // const user = session?.user;
-  // console.log("current session", user?.identities);
-  const users = await getUsers()
 
-  console.log(users)
   return (
     <div>
       <h1 className="text-4xl font-bold">Hello World</h1>

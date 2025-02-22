@@ -7,11 +7,11 @@ import { redirect } from "next/navigation";
 export async function getSession() {
   const supabase = await createClient();
   const {
-    data: { session }
+    data: { session },
   } = await supabase.auth.getSession();
 
   if (!session) {
-    return null
+    return null;
   }
 
   const {
@@ -43,7 +43,7 @@ export async function signIn() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${process.env.BASE_URL}/auth/callback`,
+      redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
     },
   });
 
@@ -64,8 +64,6 @@ export async function signIn() {
 export async function getUsers() {
   const supabase = await createClient();
   const user = await getSession();
-
-
 
   if (!user) {
     return null;
