@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 
-export default function UserMatches({ users }: { users: any[] }) {
+type User = {
+  name: string;
+  rank: number;
+  hidden_mmr: number;
+  email: string;
+};
+
+export default function UserMatches({ users }: { users: User[] }) {
   const [readyPlayers, setReadyPlayers] = useState<string[]>([]);
   const [score1, setScore1] = useState<number>(0);
   const [score2, setScore2] = useState<number>(0);

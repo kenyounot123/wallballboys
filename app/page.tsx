@@ -1,9 +1,9 @@
 import { getSession, signOut, signIn, getUsers } from "@/lib/actions";
 
 export default async function Home() {
-  const session = await getSession();
+  const user = await getSession();
   // const sessionData = session.json()
-  const user = session?.user;
+  // const user = session?.user;
   // console.log("current session", user?.identities);
   const users = await getUsers()
 
