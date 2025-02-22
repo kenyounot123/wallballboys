@@ -1,4 +1,4 @@
-import { getSession, signOut, signIn, getUsers } from "@/lib/actions";
+import { getSession, signOut, signIn } from "@/lib/actions";
 
 export default async function Home() {
   const user = await getSession();
