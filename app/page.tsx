@@ -1,13 +1,10 @@
-import { getSession, signOut, signIn, getUsers } from "@/lib/actions";
+import { getSession, signOut, signIn } from "@/lib/actions";
 
 export default async function Home() {
-  const session = await getSession();
+  const user = await getSession();
   // const sessionData = session.json()
-  const user = session?.user;
-  // console.log("current session", user?.identities);
-  const users = await getUsers()
+  // const user = session?.user;
 
-  console.log(users)
   return (
     <div>
       <h1 className="text-4xl font-bold">Hello World</h1>

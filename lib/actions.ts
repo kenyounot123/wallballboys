@@ -8,15 +8,23 @@ export async function getSession() {
   const supabase = await createClient();
   const {
     data: { session },
-    error,
   } = await supabase.auth.getSession();
+
+  if (!session) {
+    return null;
+  }
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
   if (error) {
     console.error("Error retrieving session:", error);
     return null;
   }
 
-  return session; // Contains user info, access token, etc.
+  return user; // Contains user info, access token, etc.
 }
 
 export async function signOut() {
@@ -35,7 +43,7 @@ export async function signIn() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${process.env.BASE_URL}/auth/callback`,
+      redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`,
     },
   });
 
@@ -55,15 +63,15 @@ export async function signIn() {
 
 export async function getUsers() {
   const supabase = await createClient();
-  const session = await getSession();
+  const user = await getSession();
 
-  if (!session) {
+  if (!user) {
     return null;
   }
 
-  const email = session.user.email;
+  const email = user.email;
 
-  const { data: user, error } = await supabase
+  const { data: DBuser, error } = await supabase
     .from("users")
     .select("*")
     .eq("email", email)
@@ -74,7 +82,7 @@ export async function getUsers() {
   }
 
   return {
-    session,
+    DBuser,
     user,
   };
 }
